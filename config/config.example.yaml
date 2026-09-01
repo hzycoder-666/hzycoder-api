@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+database:
+  # Replace this DSN in config/config.yaml or override it with APP_DATABASE_DSN.
+  dsn: "root:password@tcp(127.0.0.1:3306)/go_gin_template?charset=utf8mb4&parseTime=True&loc=Local"
+  max_open_conns: 20
+  max_idle_conns: 10
+  conn_max_lifetime: 3600
+  conn_max_idle_time: 1800
+
+log:
+  level: info
+
+jwt:
+  # Replace before running outside local development.
+  secret: "replace-with-a-long-random-secret"
+  expire: 7200

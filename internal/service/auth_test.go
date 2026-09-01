@@ -1,0 +1,100 @@
+package service_test
+
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"testing"
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+	"hzycoder.com/go-gin-template/internal/model"
+	reqDto "hzycoder.com/go-gin-template/internal/model/dto/request"
+	"hzycoder.com/go-gin-template/internal/service"
+	"hzycoder.com/go-gin-template/pkg/response"
+)
+
+type fakeUserRepository struct {
+	byUsername map[string]*model.User
+	byID       map[int64]*model.User
+	exists     bool
+	createErr  error
+	nextID     int64
+}
+
+func (f *fakeUserRepository) FindByUsername(_ context.Context, username string) (*model.User, error) {
+	user, ok := f.byUsername[username]
+	if !ok {
+		return nil, sql.ErrNoRows
+	}
+	return user, nil
+}
+
+func (f *fakeUserRepository) FindByID(_ context.Context, userID int64) (*model.User, error) {
+	user, ok := f.byID[userID]
+	if !ok {
+		return nil, sql.ErrNoRows
+	}
+	return user, nil
+}
+
+func (f *fakeUserRepository) ExistsByUsername(context.Context, string) (bool, error) {
+	return f.exists, nil
+}
+
+func (f *fakeUserRepository) Create(_ context.Context, user model.User) (*model.User, error) {
+	if f.createErr != nil {
+		return nil, f.createErr
+	}
+	if f.nextID == 0 {
+		f.nextID = 1
+	}
+	user.ID = f.nextID
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = user.CreatedAt
+	return &user, nil
+}
+
+func TestAuthServiceLogin(t *testing.T) {
+	hash, err := bcrypt.GenerateFromPassword([]byte("Demo123!"), bcrypt.MinCost)
+	if err != nil {
+		t.Fatalf("hash password: %v", err)
+	}
+
+	repo := &fakeUserRepository{byUsername: map[string]*model.User{
+		"demo001": {
+			ID:       1,
+			Username: "demo001",
+			Password: string(hash),
+			Role:     model.RoleMember,
+		},
+	}}
+	svc := service.NewAuthService(repo, "test-secret", time.Hour)
+
+	resp, err := svc.Login(context.Background(), reqDto.LoginUser{Username: "demo001", Password: "Demo123!"})
+	if err != nil {
+		t.Fatalf("login: %v", err)
+	}
+	if resp.Token == "" || resp.UserInfo.Username != "demo001" {
+		t.Fatalf("unexpected response: %+v", resp)
+	}
+}
+
+func TestAuthServiceRegisterDuplicateUser(t *testing.T) {
+	repo := &fakeUserRepository{exists: true}
+	svc := service.NewAuthService(repo, "test-secret", time.Hour)
+
+	_, err := svc.Register(context.Background(), reqDto.RegisterUser{
+		Username:        "demo001",
+		Password:        "Demo123!",
+		ConfirmPassword: "Demo123!",
+	})
+	if err == nil {
+		t.Fatal("expected duplicate user error")
+	}
+
+	var bizErr *response.BizError
+	if !errors.As(err, &bizErr) || bizErr.Code != response.CodeUserExists {
+		t.Fatalf("expected CodeUserExists, got %v", err)
+	}
+}

@@ -1,0 +1,46 @@
+# Build outputs
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/main
+/server
+/app
+
+# Test outputs
+*.test
+*.prof
+cover.out
+coverage.txt
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+config/config.yaml
+config/local.yaml
+config/*.local.yaml
+
+# Logs
+*.log
+logs/
+log/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Docker local overrides
+docker-compose.override.yml
