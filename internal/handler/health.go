@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type HealthChecker interface {

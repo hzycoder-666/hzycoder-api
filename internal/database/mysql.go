@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"hzycoder.com/go-gin-template/internal/config"
+	"hzycoder.com/lion/internal/config"
 )
 
 func Open(cfg config.Config) (*sqlx.DB, error) {

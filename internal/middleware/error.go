@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/pkg/response"
 )
 
 func RecoveryWithBizError() gin.HandlerFunc {

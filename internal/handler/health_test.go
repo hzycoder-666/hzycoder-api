@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/internal/handler"
+	"hzycoder.com/lion/internal/handler"
 )
 
 type fakeHealthChecker struct {

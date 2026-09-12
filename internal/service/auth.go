@@ -9,12 +9,12 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
-	"hzycoder.com/go-gin-template/internal/auth"
-	"hzycoder.com/go-gin-template/internal/model"
-	reqDto "hzycoder.com/go-gin-template/internal/model/dto/request"
-	resDto "hzycoder.com/go-gin-template/internal/model/dto/response"
-	"hzycoder.com/go-gin-template/internal/repository"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/auth"
+	"hzycoder.com/lion/internal/model"
+	reqDto "hzycoder.com/lion/internal/model/dto/request"
+	resDto "hzycoder.com/lion/internal/model/dto/response"
+	"hzycoder.com/lion/internal/repository"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type AuthService struct {

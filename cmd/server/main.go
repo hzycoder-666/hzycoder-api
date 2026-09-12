@@ -11,15 +11,15 @@ import (
 	"syscall"
 	"time"
 
-	"hzycoder.com/go-gin-template/internal/config"
-	"hzycoder.com/go-gin-template/internal/database"
-	"hzycoder.com/go-gin-template/internal/handler"
-	"hzycoder.com/go-gin-template/internal/repository"
-	"hzycoder.com/go-gin-template/internal/routes"
-	"hzycoder.com/go-gin-template/internal/service"
-	"hzycoder.com/go-gin-template/pkg/logger"
+	"hzycoder.com/lion/internal/config"
+	"hzycoder.com/lion/internal/database"
+	"hzycoder.com/lion/internal/handler"
+	"hzycoder.com/lion/internal/repository"
+	"hzycoder.com/lion/internal/routes"
+	"hzycoder.com/lion/internal/service"
+	"hzycoder.com/lion/pkg/logger"
 
-	_ "hzycoder.com/go-gin-template/pkg/utils"
+	_ "hzycoder.com/lion/pkg/utils"
 )
 
 func main() {

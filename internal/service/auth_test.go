@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
-	"hzycoder.com/go-gin-template/internal/model"
-	reqDto "hzycoder.com/go-gin-template/internal/model/dto/request"
-	"hzycoder.com/go-gin-template/internal/service"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/model"
+	reqDto "hzycoder.com/lion/internal/model/dto/request"
+	"hzycoder.com/lion/internal/service"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type fakeUserRepository struct {

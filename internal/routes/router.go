@@ -2,9 +2,9 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/internal/handler"
-	"hzycoder.com/go-gin-template/internal/middleware"
-	"hzycoder.com/go-gin-template/internal/model"
+	"hzycoder.com/lion/internal/handler"
+	"hzycoder.com/lion/internal/middleware"
+	"hzycoder.com/lion/internal/model"
 )
 
 type Deps struct {

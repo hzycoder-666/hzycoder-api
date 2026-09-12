@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"hzycoder.com/go-gin-template/internal/model"
+	"hzycoder.com/lion/internal/model"
 )
 
 type UserRepository interface {

@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"hzycoder.com/go-gin-template/internal/model"
-	reqDto "hzycoder.com/go-gin-template/internal/model/dto/request"
+	"hzycoder.com/lion/internal/model"
+	reqDto "hzycoder.com/lion/internal/model/dto/request"
 )
 
 type registerRequest struct {

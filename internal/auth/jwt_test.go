@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"hzycoder.com/go-gin-template/internal/auth"
-	"hzycoder.com/go-gin-template/internal/model"
+	"hzycoder.com/lion/internal/auth"
+	"hzycoder.com/lion/internal/model"
 )
 
 func TestGenerateAndParseToken(t *testing.T) {

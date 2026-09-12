@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"errors"
 
-	"hzycoder.com/go-gin-template/internal/model"
-	"hzycoder.com/go-gin-template/internal/repository"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/model"
+	"hzycoder.com/lion/internal/repository"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type UserService struct {

@@ -2,10 +2,10 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/internal/middleware"
-	resDto "hzycoder.com/go-gin-template/internal/model/dto/response"
-	"hzycoder.com/go-gin-template/internal/service"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/middleware"
+	resDto "hzycoder.com/lion/internal/model/dto/response"
+	"hzycoder.com/lion/internal/service"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type UserHandler struct {

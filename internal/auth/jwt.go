@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"hzycoder.com/go-gin-template/internal/model"
+	"hzycoder.com/lion/internal/model"
 )
 
 type Claims struct {

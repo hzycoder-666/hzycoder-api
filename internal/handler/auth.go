@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/internal/service"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/service"
+	"hzycoder.com/lion/pkg/response"
 )
 
 type AuthHandler struct {

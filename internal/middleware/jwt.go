@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"hzycoder.com/go-gin-template/internal/auth"
-	"hzycoder.com/go-gin-template/internal/model"
-	"hzycoder.com/go-gin-template/pkg/response"
+	"hzycoder.com/lion/internal/auth"
+	"hzycoder.com/lion/internal/model"
+	"hzycoder.com/lion/pkg/response"
 )
 
 func AuthMiddleware(secret string) gin.HandlerFunc {

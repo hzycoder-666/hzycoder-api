@@ -1,6 +1,6 @@
 package request
 
-import "hzycoder.com/go-gin-template/internal/model"
+import "hzycoder.com/lion/internal/model"
 
 type RegisterUser struct {
 	Username        string      `json:"username" binding:"required,min=3,max=20,alphanum"`

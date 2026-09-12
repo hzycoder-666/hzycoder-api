@@ -1,6 +1,6 @@
 package response
 
-import "hzycoder.com/go-gin-template/internal/model"
+import "hzycoder.com/lion/internal/model"
 
 type QueryUser struct {
 	ID       int64      `json:"id"`
