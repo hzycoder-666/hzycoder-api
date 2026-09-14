@@ -16,6 +16,14 @@ func NewUserHandler(users *service.UserService) *UserHandler {
 	return &UserHandler{users: users}
 }
 
+// GetByUsername
+// @Summary 按用户名查询用户（仅管理员）
+// @Tags 用户
+// @Produce json
+// @Security BearerAuth
+// @Param username path string true "用户名"
+// @Success 200 {object} response.Resp{data=resDto.QueryUser}
+// @Router /v1/users/{username} [get]
 func (h *UserHandler) GetByUsername(c *gin.Context) {
 	user, err := h.users.GetByUsername(c.Request.Context(), c.Param("username"))
 	if err != nil {
@@ -31,6 +39,13 @@ func (h *UserHandler) GetByUsername(c *gin.Context) {
 	})
 }
 
+// Me
+// @Summary 当前登录用户信息
+// @Tags 用户
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} response.Resp{data=resDto.QueryUser}
+// @Router /v1/users/me [get]
 func (h *UserHandler) Me(c *gin.Context) {
 	user, err := h.users.GetByID(c.Request.Context(), middleware.GetUserID(c))
 	if err != nil {

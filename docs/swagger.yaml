@@ -1,0 +1,1199 @@
+basePath: /api
+definitions:
+  handler.createPaperRequest:
+    properties:
+      description:
+        maxLength: 512
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_request.PaperQuestionInput'
+        maxItems: 200
+        minItems: 1
+        type: array
+      title:
+        maxLength: 128
+        minLength: 2
+        type: string
+    required:
+    - questions
+    - title
+    type: object
+  handler.createQuestionRequest:
+    properties:
+      analysis:
+        maxLength: 2000
+        type: string
+      answer:
+        items:
+          type: integer
+        type: array
+      content:
+        maxLength: 2000
+        minLength: 2
+        type: string
+      default_score:
+        maximum: 100
+        minimum: 1
+        type: integer
+      difficulty:
+        maximum: 5
+        minimum: 1
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/model.QuestionOption'
+        maxItems: 10
+        type: array
+      tags:
+        maxLength: 255
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/model.QuestionType'
+        enum:
+        - single
+        - multiple
+        - judge
+    required:
+    - answer
+    - content
+    - type
+    type: object
+  handler.loginRequest:
+    properties:
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      username:
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  handler.registerRequest:
+    properties:
+      confirm_password:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      username:
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - confirm_password
+    - password
+    - username
+    type: object
+  handler.submitRequest:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_request.SubmitAnswer'
+        type: array
+    required:
+    - answers
+    type: object
+  handler.updatePaperRequest:
+    properties:
+      description:
+        maxLength: 512
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_request.PaperQuestionInput'
+        maxItems: 200
+        minItems: 1
+        type: array
+      title:
+        maxLength: 128
+        minLength: 2
+        type: string
+    type: object
+  handler.updateQuestionRequest:
+    properties:
+      analysis:
+        maxLength: 2000
+        type: string
+      answer:
+        items:
+          type: integer
+        type: array
+      content:
+        maxLength: 2000
+        minLength: 2
+        type: string
+      default_score:
+        maximum: 100
+        minimum: 1
+        type: integer
+      difficulty:
+        maximum: 5
+        minimum: 1
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/model.QuestionOption'
+        maxItems: 10
+        type: array
+      status:
+        allOf:
+        - $ref: '#/definitions/model.QuestionStatus'
+        enum:
+        - enabled
+        - disabled
+      tags:
+        maxLength: 255
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/model.QuestionType'
+        enum:
+        - single
+        - multiple
+        - judge
+    type: object
+  hzycoder_com_lion_internal_model_dto_request.PaperQuestionInput:
+    properties:
+      question_id:
+        type: integer
+      score:
+        maximum: 100
+        minimum: 1
+        type: integer
+    required:
+    - question_id
+    type: object
+  hzycoder_com_lion_internal_model_dto_request.SubmitAnswer:
+    properties:
+      answer:
+        description: null 或缺省表示未作答
+        items:
+          type: integer
+        type: array
+      question_id:
+        type: integer
+    required:
+    - question_id
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AdminAttemptItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      user_id:
+        type: integer
+      user_score:
+        type: integer
+      username:
+        type: string
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AdminAttemptPage:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AdminAttemptItem'
+        type: array
+      total:
+        type: integer
+      total_score:
+        description: 试卷满分，便于前端算得分率
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AnswerResult:
+    properties:
+      analysis:
+        type: string
+      correct_answer:
+        items:
+          type: integer
+        type: array
+      is_correct:
+        type: boolean
+      question_id:
+        type: integer
+      score:
+        description: 题目分值
+        type: integer
+      seq:
+        type: integer
+      user_answer:
+        items:
+          type: integer
+        type: array
+      user_score:
+        description: 本题得分
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AttemptAnswerView:
+    properties:
+      analysis:
+        type: string
+      content:
+        type: string
+      correct_answer:
+        items:
+          type: integer
+        type: array
+      is_correct:
+        type: boolean
+      options:
+        items:
+          $ref: '#/definitions/model.QuestionOption'
+        type: array
+      question_id:
+        type: integer
+      score:
+        type: integer
+      seq:
+        type: integer
+      type:
+        $ref: '#/definitions/model.QuestionType'
+      user_answer:
+        items:
+          type: integer
+        type: array
+      user_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AttemptDetail:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AttemptAnswerView'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: integer
+      paper_id:
+        type: integer
+      paper_title:
+        type: string
+      total_score:
+        type: integer
+      user_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AttemptItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      paper_id:
+        type: integer
+      paper_title:
+        type: string
+      total_score:
+        type: integer
+      user_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.AttemptPage:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AttemptItem'
+        type: array
+      total:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.PaperDetail:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      question_count:
+        type: integer
+      questions:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperQuestionView'
+        type: array
+      status:
+        $ref: '#/definitions/model.PaperStatus'
+      title:
+        type: string
+      total_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.PaperItem:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      question_count:
+        type: integer
+      status:
+        $ref: '#/definitions/model.PaperStatus'
+      title:
+        type: string
+      total_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.PaperPage:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperItem'
+        type: array
+      total:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.PaperQuestionView:
+    properties:
+      analysis:
+        type: string
+      answer:
+        items:
+          type: integer
+        type: array
+      content:
+        type: string
+      options:
+        items:
+          $ref: '#/definitions/model.QuestionOption'
+        type: array
+      question_id:
+        type: integer
+      score:
+        type: integer
+      seq:
+        type: integer
+      type:
+        $ref: '#/definitions/model.QuestionType'
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.PaperStats:
+    properties:
+      attempt_count:
+        type: integer
+      avg_score:
+        type: number
+      max_score:
+        type: integer
+      paper_id:
+        type: integer
+      title:
+        type: string
+      total_score:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.QueryUser:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      username:
+        type: string
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.QuestionItem:
+    properties:
+      analysis:
+        type: string
+      answer:
+        items:
+          type: integer
+        type: array
+      content:
+        type: string
+      created_at:
+        type: string
+      default_score:
+        type: integer
+      difficulty:
+        type: integer
+      id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/model.QuestionOption'
+        type: array
+      status:
+        $ref: '#/definitions/model.QuestionStatus'
+      tags:
+        type: string
+      type:
+        $ref: '#/definitions/model.QuestionType'
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.QuestionPage:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QuestionItem'
+        type: array
+      total:
+        type: integer
+    type: object
+  hzycoder_com_lion_internal_model_dto_response.SubmitResult:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AnswerResult'
+        type: array
+      attempt_id:
+        type: integer
+      paper_id:
+        type: integer
+      title:
+        type: string
+      total_score:
+        type: integer
+      user_score:
+        type: integer
+    type: object
+  model.PaperStatus:
+    enum:
+    - draft
+    - published
+    - offline
+    type: string
+    x-enum-varnames:
+    - PaperStatusDraft
+    - PaperStatusPublished
+    - PaperStatusOffline
+  model.QuestionOption:
+    properties:
+      key:
+        type: string
+      text:
+        type: string
+    type: object
+  model.QuestionStatus:
+    enum:
+    - enabled
+    - disabled
+    type: string
+    x-enum-varnames:
+    - QuestionStatusEnabled
+    - QuestionStatusDisabled
+  model.QuestionType:
+    enum:
+    - single
+    - multiple
+    - judge
+    type: string
+    x-enum-varnames:
+    - QuestionTypeSingle
+    - QuestionTypeMultiple
+    - QuestionTypeJudge
+  model.Role:
+    enum:
+    - guest
+    - admin
+    - member
+    type: string
+    x-enum-varnames:
+    - RoleGuest
+    - RoleAdmin
+    - RoleMember
+  response.Resp:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  service.LoginResp:
+    properties:
+      token:
+        type: string
+      userInfo:
+        $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QueryUser'
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: 试卷系统后端服务：题库管理、手动组卷与发布、在线答题、自动评分、成绩查询与统计。
+  title: Lion 试卷系统 API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 校验用户名密码，签发 JWT
+      parameters:
+      - description: 登录参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.LoginResp'
+              type: object
+      summary: 用户登录
+      tags:
+      - 认证
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 注册新用户；role 传 admin 可注册管理员（本地开发用）
+      parameters:
+      - description: 注册参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.registerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.LoginResp'
+              type: object
+      summary: 用户注册
+      tags:
+      - 认证
+  /healthz:
+    get:
+      description: 返回服务存活状态与运行时长，不检查依赖
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Resp'
+      summary: 存活探针
+      tags:
+      - 系统
+  /readyz:
+    get:
+      description: 检查数据库连通性，依赖异常时返回 503
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Resp'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/response.Resp'
+      summary: 就绪探针
+      tags:
+      - 系统
+  /v1/admin/papers:
+    get:
+      parameters:
+      - description: 状态：draft published offline
+        enum:
+        - draft
+        - published
+        - offline
+        in: query
+        name: status
+        type: string
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperPage'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 试卷分页列表（管理端）
+      tags:
+      - 试卷管理
+    post:
+      consumes:
+      - application/json
+      description: 从题库选题组卷，初始状态为 draft；questions 传题目 ID、顺序与分值
+      parameters:
+      - description: 试卷信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createPaperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperDetail'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 新建试卷（草稿）
+      tags:
+      - 试卷管理
+  /v1/admin/papers/{id}:
+    get:
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperDetail'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 试卷详情（管理端，含答案解析）
+      tags:
+      - 试卷管理
+    put:
+      consumes:
+      - application/json
+      description: 仅 draft 状态可编辑；questions 整体替换
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 待更新字段
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updatePaperRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperDetail'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 编辑试卷（仅草稿）
+      tags:
+      - 试卷管理
+  /v1/admin/papers/{id}/attempts:
+    get:
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 10
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AdminAttemptPage'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 按试卷查看成绩列表
+      tags:
+      - 成绩统计
+  /v1/admin/papers/{id}/offline:
+    post:
+      description: 仅 published 状态可下架；下架后用户端不可见
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Resp'
+      security:
+      - BearerAuth: []
+      summary: 下架试卷
+      tags:
+      - 试卷管理
+  /v1/admin/papers/{id}/publish:
+    post:
+      description: 仅 draft 状态可发布；发布后用户端可见可作答
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Resp'
+      security:
+      - BearerAuth: []
+      summary: 发布试卷
+      tags:
+      - 试卷管理
+  /v1/admin/papers/{id}/stats:
+    get:
+      description: 返回作答人数、平均分、最高分
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperStats'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 单卷最简统计
+      tags:
+      - 成绩统计
+  /v1/admin/questions:
+    get:
+      description: 支持题型/状态/难度/标签筛选与关键词搜索（匹配题干）
+      parameters:
+      - description: 题型：single multiple judge
+        enum:
+        - single
+        - multiple
+        - judge
+        in: query
+        name: type
+        type: string
+      - description: 状态：enabled disabled
+        enum:
+        - enabled
+        - disabled
+        in: query
+        name: status
+        type: string
+      - description: 难度 1-5
+        in: query
+        name: difficulty
+        type: integer
+      - description: 标签（逗号分隔标签之一即命中）
+        in: query
+        name: tag
+        type: string
+      - description: 题干关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QuestionPage'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 题目分页列表
+      tags:
+      - 题库管理
+    post:
+      consumes:
+      - application/json
+      description: 创建单选/多选/判断题；tags 为逗号分隔字符串；answer 为 JSON（单选/判断传字符串，多选传字符串数组）
+      parameters:
+      - description: 题目内容
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QuestionItem'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 新建题目
+      tags:
+      - 题库管理
+  /v1/admin/questions/{id}:
+    delete:
+      description: 已被试卷引用的题目不可删除
+      parameters:
+      - description: 题目 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Resp'
+      security:
+      - BearerAuth: []
+      summary: 删除题目
+      tags:
+      - 题库管理
+    get:
+      parameters:
+      - description: 题目 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QuestionItem'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 题目详情
+      tags:
+      - 题库管理
+    put:
+      consumes:
+      - application/json
+      description: 全字段可选更新；status 可切换 enabled/disabled
+      parameters:
+      - description: 题目 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 待更新字段
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QuestionItem'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 编辑题目
+      tags:
+      - 题库管理
+  /v1/attempts:
+    get:
+      parameters:
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 10
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AttemptPage'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 我的答题历史
+      tags:
+      - 答题
+  /v1/attempts/{id}:
+    get:
+      description: 含逐题正误、我的答案、标准答案与解析
+      parameters:
+      - description: 答卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.AttemptDetail'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 答卷详情
+      tags:
+      - 答题
+  /v1/papers:
+    get:
+      description: 仅返回 published 状态的试卷摘要
+      parameters:
+      - description: 标题关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码，默认 1
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数，默认 20
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperPage'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 已发布试卷列表（用户端）
+      tags:
+      - 答题
+  /v1/papers/{id}:
+    get:
+      description: 仅包含题干与选项，不含答案与解析
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.PaperDetail'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 试卷答题视图（用户端）
+      tags:
+      - 答题
+  /v1/papers/{id}/submit:
+    post:
+      consumes:
+      - application/json
+      description: 逐题作答并即时评分保存；answer 传 null 表示未作答（计 0 分）
+      parameters:
+      - description: 试卷 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 逐题作答
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.submitRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.SubmitResult'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 提交答卷
+      tags:
+      - 答题
+  /v1/users/{username}:
+    get:
+      parameters:
+      - description: 用户名
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QueryUser'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 按用户名查询用户（仅管理员）
+      tags:
+      - 用户
+  /v1/users/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/hzycoder_com_lion_internal_model_dto_response.QueryUser'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: 当前登录用户信息
+      tags:
+      - 用户
+securityDefinitions:
+  BearerAuth:
+    description: 登录或注册接口签发的 JWT，格式：Bearer <token>
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

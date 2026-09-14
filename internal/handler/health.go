@@ -24,6 +24,13 @@ func NewHealthHandler(db HealthChecker) *HealthHandler {
 	}
 }
 
+// Healthz
+// @Summary 存活探针
+// @Description 返回服务存活状态与运行时长，不检查依赖
+// @Tags 系统
+// @Produce json
+// @Success 200 {object} response.Resp
+// @Router /healthz [get]
 func (h *HealthHandler) Healthz(c *gin.Context) {
 	response.Success(c, gin.H{
 		"status": "ok",
@@ -31,6 +38,14 @@ func (h *HealthHandler) Healthz(c *gin.Context) {
 	})
 }
 
+// Readyz
+// @Summary 就绪探针
+// @Description 检查数据库连通性，依赖异常时返回 503
+// @Tags 系统
+// @Produce json
+// @Success 200 {object} response.Resp
+// @Failure 503 {object} response.Resp
+// @Router /readyz [get]
 func (h *HealthHandler) Readyz(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 2*time.Second)
 	defer cancel()

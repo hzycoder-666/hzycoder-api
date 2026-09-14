@@ -22,6 +22,14 @@ const (
 	CodeTokenInvalid  = 2004 // Token无效
 	CodeTokenExpired  = 2005 // Token过期
 
+	CodeQuestionNotFound   = 3001 // 题目不存在
+	CodeQuestionReferenced = 3002 // 题目已被试卷引用
+	CodeQuestionInvalid    = 3003 // 题目数据不合法
+	CodePaperNotFound      = 3101 // 试卷不存在
+	CodePaperInvalid       = 3102 // 试卷数据不合法
+	CodePaperStatusInvalid = 3103 // 试卷状态不允许该操作
+	CodeAttemptNotFound    = 3201 // 答卷不存在
+
 	CodeSystemError = 5000 // 系统错误
 	CodeDBError     = 5001 // 数据库错误
 	CodeCacheError  = 5002 // 缓存错误
@@ -39,9 +47,18 @@ var errorMessages = map[int]string{
 	CodePasswordWrong: "密码错误",
 	CodeTokenInvalid:  "Token无效",
 	CodeTokenExpired:  "Token已过期",
-	CodeSystemError:   "系统内部错误",
-	CodeDBError:       "数据库错误",
-	CodeCacheError:    "缓存服务错误",
+
+	CodeQuestionNotFound:   "题目不存在",
+	CodeQuestionReferenced: "题目已被试卷引用，无法删除",
+	CodeQuestionInvalid:    "题目数据不合法",
+	CodePaperNotFound:      "试卷不存在",
+	CodePaperInvalid:       "试卷数据不合法",
+	CodePaperStatusInvalid: "试卷当前状态不允许该操作",
+	CodeAttemptNotFound:    "答卷不存在",
+
+	CodeSystemError: "系统内部错误",
+	CodeDBError:     "数据库错误",
+	CodeCacheError:  "缓存服务错误",
 }
 
 // Resp 统一响应结构

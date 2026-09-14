@@ -33,7 +33,7 @@ func (r *SQLUserRepository) FindByUsername(ctx context.Context, username string)
 	var user model.User
 	err := r.db.GetContext(ctx, &user, `
 		SELECT id, username, password, nickname, role, created_at, updated_at
-		FROM users
+		FROM sys_user
 		WHERE username = ?
 	`, username)
 	if err != nil {
@@ -50,7 +50,7 @@ func (r *SQLUserRepository) FindByID(ctx context.Context, userID int64) (*model.
 	var user model.User
 	err := r.db.GetContext(ctx, &user, `
 		SELECT id, username, password, nickname, role, created_at, updated_at
-		FROM users
+		FROM sys_user
 		WHERE id = ?
 	`, userID)
 	if err != nil {
@@ -65,7 +65,7 @@ func (r *SQLUserRepository) ExistsByUsername(ctx context.Context, username strin
 	defer cancel()
 
 	var exists int
-	err := r.db.GetContext(ctx, &exists, `SELECT 1 FROM users WHERE username = ? LIMIT 1`, username)
+	err := r.db.GetContext(ctx, &exists, `SELECT 1 FROM sys_user WHERE username = ? LIMIT 1`, username)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
@@ -85,7 +85,7 @@ func (r *SQLUserRepository) Create(ctx context.Context, user model.User) (*model
 	user.UpdatedAt = now
 
 	result, err := r.db.NamedExecContext(ctx, `
-		INSERT INTO users (username, password, nickname, role, created_at, updated_at)
+		INSERT INTO sys_user (username, password, nickname, role, created_at, updated_at)
 		VALUES (:username, :password, :nickname, :role, :created_at, :updated_at)
 	`, user)
 	if err != nil {
