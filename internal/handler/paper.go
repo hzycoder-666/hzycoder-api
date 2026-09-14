@@ -87,7 +87,13 @@ func (h *PaperHandler) Create(c *gin.Context) {
 		return
 	}
 
-	detail, err := h.papers.Create(c.Request.Context(), middleware.GetUserID(c), req.toDTO())
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
+	detail, err := h.papers.Create(c.Request.Context(), userID, req.toDTO())
 	if err != nil {
 		c.Error(err)
 		return

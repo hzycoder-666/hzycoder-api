@@ -38,6 +38,14 @@ func (f *fakeUserRepository) FindByID(_ context.Context, userID int64) (*model.U
 	return user, nil
 }
 
+func (f *fakeUserRepository) FindRoleByID(_ context.Context, userID int64) (model.Role, error) {
+	user, ok := f.byID[userID]
+	if !ok {
+		return "", sql.ErrNoRows
+	}
+	return user.Role, nil
+}
+
 func (f *fakeUserRepository) ExistsByUsername(context.Context, string) (bool, error) {
 	return f.exists, nil
 }
@@ -69,7 +77,7 @@ func TestAuthServiceLogin(t *testing.T) {
 			Role:     model.RoleMember,
 		},
 	}}
-	svc := service.NewAuthService(repo, "test-secret", time.Hour)
+	svc := service.NewAuthService(repo, "test-secret", time.Hour, false)
 
 	resp, err := svc.Login(context.Background(), reqDto.LoginUser{Username: "demo001", Password: "Demo123!"})
 	if err != nil {
@@ -82,7 +90,7 @@ func TestAuthServiceLogin(t *testing.T) {
 
 func TestAuthServiceRegisterDuplicateUser(t *testing.T) {
 	repo := &fakeUserRepository{exists: true}
-	svc := service.NewAuthService(repo, "test-secret", time.Hour)
+	svc := service.NewAuthService(repo, "test-secret", time.Hour, false)
 
 	_, err := svc.Register(context.Background(), reqDto.RegisterUser{
 		Username:        "demo001",
@@ -96,5 +104,24 @@ func TestAuthServiceRegisterDuplicateUser(t *testing.T) {
 	var bizErr *response.BizError
 	if !errors.As(err, &bizErr) || bizErr.Code != response.CodeUserExists {
 		t.Fatalf("expected CodeUserExists, got %v", err)
+	}
+}
+
+func TestAuthServiceRegisterIgnoresRequestedRoleWhenSwitchOff(t *testing.T) {
+	repo := &fakeUserRepository{}
+	svc := service.NewAuthService(repo, "test-secret", time.Hour, false)
+
+	admin := model.RoleAdmin
+	resp, err := svc.Register(context.Background(), reqDto.RegisterUser{
+		Username:        "demo001",
+		Password:        "Demo123!",
+		ConfirmPassword: "Demo123!",
+		Role:            &admin,
+	})
+	if err != nil {
+		t.Fatalf("register: %v", err)
+	}
+	if resp.UserInfo.Role != model.RoleMember {
+		t.Fatalf("expected role member, got %v", resp.UserInfo.Role)
 	}
 }

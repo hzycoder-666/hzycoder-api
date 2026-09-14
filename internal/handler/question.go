@@ -118,7 +118,13 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 		return
 	}
 
-	item, err := h.questions.Create(c.Request.Context(), middleware.GetUserID(c), req.toDTO())
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
+	item, err := h.questions.Create(c.Request.Context(), userID, req.toDTO())
 	if err != nil {
 		c.Error(err)
 		return

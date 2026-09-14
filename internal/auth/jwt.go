@@ -1,11 +1,14 @@
 package auth
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"hzycoder.com/lion/internal/model"
 )
+
+const Issuer = "lion"
 
 type Claims struct {
 	UserID   int64      `json:"user_id"`
@@ -20,6 +23,8 @@ func GenerateToken(secret []byte, expire time.Duration, userID int64, username s
 		Username: username,
 		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    Issuer,
+			Subject:   fmt.Sprintf("%d", userID),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expire)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
@@ -30,8 +35,15 @@ func GenerateToken(secret []byte, expire time.Duration, userID int64, username s
 
 func ParseToken(secret []byte, tokenStr string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
 		return secret, nil
-	})
+	},
+		jwt.WithValidMethods([]string{"HS256"}),
+		jwt.WithIssuer(Issuer),
+		jwt.WithExpirationRequired(),
+	)
 	if err != nil {
 		return nil, err
 	}

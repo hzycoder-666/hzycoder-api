@@ -10,11 +10,12 @@ import (
 
 // 业务错误码定义
 const (
-	CodeSuccess      = 0    // 成功
-	CodeParamInvalid = 1001 // 参数错误
-	CodeUnauthorized = 1002 // 未授权
-	CodeForbidden    = 1003 // 禁止访问
-	CodeNotFound     = 1004 // 资源不存在
+	CodeSuccess         = 0    // 成功
+	CodeParamInvalid    = 1001 // 参数错误
+	CodeUnauthorized    = 1002 // 未授权
+	CodeForbidden       = 1003 // 禁止访问
+	CodeNotFound        = 1004 // 资源不存在
+	CodeTooManyRequests = 1005 // 请求过于频繁
 
 	CodeUserNotFound  = 2001 // 用户不存在
 	CodeUserExists    = 2002 // 用户已存在
@@ -37,16 +38,17 @@ const (
 
 // 错误信息映射
 var errorMessages = map[int]string{
-	CodeSuccess:       "success",
-	CodeParamInvalid:  "参数错误",
-	CodeUnauthorized:  "未授权访问",
-	CodeForbidden:     "禁止访问",
-	CodeNotFound:      "资源不存在",
-	CodeUserNotFound:  "用户不存在",
-	CodeUserExists:    "用户已存在",
-	CodePasswordWrong: "密码错误",
-	CodeTokenInvalid:  "Token无效",
-	CodeTokenExpired:  "Token已过期",
+	CodeSuccess:         "success",
+	CodeParamInvalid:    "参数错误",
+	CodeUnauthorized:    "未授权访问",
+	CodeForbidden:       "禁止访问",
+	CodeNotFound:        "资源不存在",
+	CodeTooManyRequests: "请求过于频繁，请稍后再试",
+	CodeUserNotFound:    "用户不存在",
+	CodeUserExists:      "用户已存在",
+	CodePasswordWrong:   "密码错误",
+	CodeTokenInvalid:    "Token无效",
+	CodeTokenExpired:    "Token已过期",
 
 	CodeQuestionNotFound:   "题目不存在",
 	CodeQuestionReferenced: "题目已被试卷引用，无法删除",
@@ -177,6 +179,8 @@ func mapBizCodeToHTTPStatus(code int) int {
 			return http.StatusForbidden
 		case CodeNotFound:
 			return http.StatusNotFound
+		case CodeTooManyRequests:
+			return http.StatusTooManyRequests
 		default:
 			return http.StatusBadRequest
 		}

@@ -14,6 +14,7 @@ import (
 	"hzycoder.com/lion/internal/config"
 	"hzycoder.com/lion/internal/database"
 	"hzycoder.com/lion/internal/handler"
+	"hzycoder.com/lion/internal/middleware"
 	"hzycoder.com/lion/internal/repository"
 	"hzycoder.com/lion/internal/routes"
 	"hzycoder.com/lion/internal/service"
@@ -61,19 +62,22 @@ func main() {
 	attemptRepo := repository.NewAttemptRepository(db)
 
 	userService := service.NewUserService(userRepo)
-	authService := service.NewAuthService(userRepo, cfg.JWT.Secret, time.Duration(cfg.JWT.Expire)*time.Second)
+	authService := service.NewAuthService(userRepo, cfg.JWT.Secret, time.Duration(cfg.JWT.Expire)*time.Second, cfg.Auth.AllowAdminRegister)
 	questionService := service.NewQuestionService(questionRepo)
 	paperService := service.NewPaperService(paperRepo, questionRepo)
 	attemptService := service.NewAttemptService(attemptRepo, paperRepo)
 
 	r := routes.SetupRouter(routes.Deps{
-		JWTSecret: cfg.JWT.Secret,
-		Health:    handler.NewHealthHandler(db),
-		Auth:      handler.NewAuthHandler(authService),
-		Users:     handler.NewUserHandler(userService),
-		Questions: handler.NewQuestionHandler(questionService),
-		Papers:    handler.NewPaperHandler(paperService),
-		Attempts:  handler.NewAttemptHandler(attemptService),
+		JWTSecret:       cfg.JWT.Secret,
+		UserRepo:        userRepo,
+		LoginLimiter:    newRateLimiter(cfg.Auth.LoginRateLimit),
+		RegisterLimiter: newRateLimiter(cfg.Auth.RegisterRateLimit),
+		Health:          handler.NewHealthHandler(db),
+		Auth:            handler.NewAuthHandler(authService),
+		Users:           handler.NewUserHandler(userService),
+		Questions:       handler.NewQuestionHandler(questionService),
+		Papers:          handler.NewPaperHandler(paperService),
+		Attempts:        handler.NewAttemptHandler(attemptService),
 	})
 
 	srv := &http.Server{
@@ -107,4 +111,11 @@ func defaultConfigPath() string {
 		return path
 	}
 	return "config/config.yaml"
+}
+
+func newRateLimiter(requestsPerMinute int) *middleware.RateLimiter {
+	if requestsPerMinute <= 0 {
+		return nil
+	}
+	return middleware.NewRateLimiter(requestsPerMinute, requestsPerMinute)
 }

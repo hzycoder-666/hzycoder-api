@@ -18,9 +18,10 @@ import (
 )
 
 type AuthService struct {
-	users     repository.UserRepository
-	jwtSecret string
-	jwtExpire time.Duration
+	users              repository.UserRepository
+	jwtSecret          string
+	jwtExpire          time.Duration
+	allowAdminRegister bool
 }
 
 type LoginResp struct {
@@ -28,22 +29,35 @@ type LoginResp struct {
 	UserInfo *resDto.QueryUser `json:"userInfo"`
 }
 
-func NewAuthService(users repository.UserRepository, jwtSecret string, jwtExpire time.Duration) *AuthService {
+// dummyPasswordHash 用于用户不存在时的假哈希比较，避免通过响应时间探测用户名是否存在
+var dummyPasswordHash = mustBcryptHash("dummy-password")
+
+func mustBcryptHash(password string) []byte {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
+	return hash
+}
+
+func NewAuthService(users repository.UserRepository, jwtSecret string, jwtExpire time.Duration, allowAdminRegister bool) *AuthService {
 	return &AuthService{
-		users:     users,
-		jwtSecret: jwtSecret,
-		jwtExpire: jwtExpire,
+		users:              users,
+		jwtSecret:          jwtSecret,
+		jwtExpire:          jwtExpire,
+		allowAdminRegister: allowAdminRegister,
 	}
 }
 
 func (s *AuthService) Login(ctx context.Context, req reqDto.LoginUser) (*LoginResp, error) {
 	user, err := s.users.FindByUsername(ctx, req.Username)
 	if err != nil {
-		return nil, response.NewBizError(response.CodeUserNotFound)
+		_ = bcrypt.CompareHashAndPassword(dummyPasswordHash, []byte(req.Password))
+		return nil, response.NewBizError(response.CodePasswordWrong, "用户名或密码错误")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return nil, response.NewBizError(response.CodePasswordWrong)
+		return nil, response.NewBizError(response.CodePasswordWrong, "用户名或密码错误")
 	}
 
 	token, err := auth.GenerateToken([]byte(s.jwtSecret), s.jwtExpire, user.ID, user.Username, user.Role)
@@ -79,7 +93,7 @@ func (s *AuthService) Register(ctx context.Context, req reqDto.RegisterUser) (*L
 	}
 
 	role := model.RoleMember
-	if req.Role != nil && model.IsValid(*req.Role) {
+	if s.allowAdminRegister && req.Role != nil && model.IsValid(*req.Role) {
 		role = *req.Role
 	}
 

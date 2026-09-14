@@ -14,6 +14,7 @@ import (
 type UserRepository interface {
 	FindByUsername(ctx context.Context, username string) (*model.User, error)
 	FindByID(ctx context.Context, userID int64) (*model.User, error)
+	FindRoleByID(ctx context.Context, userID int64) (model.Role, error)
 	ExistsByUsername(ctx context.Context, username string) (bool, error)
 	Create(ctx context.Context, user model.User) (*model.User, error)
 }
@@ -58,6 +59,19 @@ func (r *SQLUserRepository) FindByID(ctx context.Context, userID int64) (*model.
 	}
 
 	return &user, nil
+}
+
+func (r *SQLUserRepository) FindRoleByID(ctx context.Context, userID int64) (model.Role, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	var role model.Role
+	err := r.db.GetContext(ctx, &role, `SELECT role FROM sys_user WHERE id = ?`, userID)
+	if err != nil {
+		return "", err
+	}
+
+	return role, nil
 }
 
 func (r *SQLUserRepository) ExistsByUsername(ctx context.Context, username string) (bool, error) {

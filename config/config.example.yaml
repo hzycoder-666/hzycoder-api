@@ -16,3 +16,10 @@ jwt:
   # Replace before running outside local development.
   secret: "replace-with-a-long-random-secret"
   expire: 7200
+
+auth:
+  # 仅本地开发需要注册管理员时开启；生产必须保持 false
+  allow_admin_register: false
+  # 每个 IP 每分钟的请求上限，0 表示关闭限速
+  login_rate_limit: 10
+  register_rate_limit: 5

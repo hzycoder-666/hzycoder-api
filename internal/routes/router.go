@@ -5,16 +5,20 @@ import (
 	"hzycoder.com/lion/internal/handler"
 	"hzycoder.com/lion/internal/middleware"
 	"hzycoder.com/lion/internal/model"
+	"hzycoder.com/lion/internal/repository"
 )
 
 type Deps struct {
-	JWTSecret string
-	Health    *handler.HealthHandler
-	Auth      *handler.AuthHandler
-	Users     *handler.UserHandler
-	Questions *handler.QuestionHandler
-	Papers    *handler.PaperHandler
-	Attempts  *handler.AttemptHandler
+	JWTSecret       string
+	UserRepo        repository.UserRepository
+	LoginLimiter    *middleware.RateLimiter
+	RegisterLimiter *middleware.RateLimiter
+	Health          *handler.HealthHandler
+	Auth            *handler.AuthHandler
+	Users           *handler.UserHandler
+	Questions       *handler.QuestionHandler
+	Papers          *handler.PaperHandler
+	Attempts        *handler.AttemptHandler
 }
 
 func SetupRouter(deps Deps) *gin.Engine {
@@ -36,15 +40,15 @@ func SetupRouter(deps Deps) *gin.Engine {
 	{
 		auth := api.Group("/auth")
 		{
-			auth.POST("/login", deps.Auth.Login)
-			auth.POST("/register", deps.Auth.Register)
+			auth.POST("/login", deps.LoginLimiter.Limit(), deps.Auth.Login)
+			auth.POST("/register", deps.RegisterLimiter.Limit(), deps.Auth.Register)
 		}
 
 		v1 := api.Group("/v1")
 		v1.Use(middleware.AuthMiddleware(deps.JWTSecret))
 		{
 			v1.GET("/users/me", deps.Users.Me)
-			v1.GET("/users/:username", middleware.RequireRole(model.RoleAdmin), deps.Users.GetByUsername)
+			v1.GET("/users/:username", middleware.RequireRole(deps.UserRepo, model.RoleAdmin), deps.Users.GetByUsername)
 
 			// 试卷系统-用户端（练习模式）
 			v1.GET("/papers", deps.Papers.ListPublished)
@@ -54,7 +58,7 @@ func SetupRouter(deps Deps) *gin.Engine {
 			v1.GET("/attempts/:id", deps.Attempts.GetByID)
 
 			// 试卷系统-管理端
-			admin := v1.Group("/admin", middleware.RequireRole(model.RoleAdmin))
+			admin := v1.Group("/admin", middleware.RequireRole(deps.UserRepo, model.RoleAdmin))
 			{
 				admin.POST("/questions", deps.Questions.Create)
 				admin.GET("/questions", deps.Questions.List)

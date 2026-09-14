@@ -33,13 +33,19 @@ func (h *AttemptHandler) Submit(c *gin.Context) {
 		return
 	}
 
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
 	var req submitRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	result, err := h.attempts.Submit(c.Request.Context(), middleware.GetUserID(c), paperID, req.toDTO())
+	result, err := h.attempts.Submit(c.Request.Context(), userID, paperID, req.toDTO())
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -64,8 +70,14 @@ func (h *AttemptHandler) List(c *gin.Context) {
 		return
 	}
 
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
 	f := req.toDTO()
-	page, err := h.attempts.List(c.Request.Context(), middleware.GetUserID(c), f.Page, f.PageSize)
+	page, err := h.attempts.List(c.Request.Context(), userID, f.Page, f.PageSize)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -89,7 +101,13 @@ func (h *AttemptHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	detail, err := h.attempts.GetByID(c.Request.Context(), middleware.GetUserID(c), id)
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
+	detail, err := h.attempts.GetByID(c.Request.Context(), userID, id)
 	if err != nil {
 		_ = c.Error(err)
 		return

@@ -27,6 +27,12 @@ type Config struct {
 		Secret string `mapstructure:"secret"`
 		Expire int    `mapstructure:"expire"`
 	} `mapstructure:"jwt"`
+
+	Auth struct {
+		AllowAdminRegister bool `mapstructure:"allow_admin_register"`
+		LoginRateLimit     int  `mapstructure:"login_rate_limit"`
+		RegisterRateLimit  int  `mapstructure:"register_rate_limit"`
+	} `mapstructure:"auth"`
 }
 
 func Load(path string) (*Config, error) {
@@ -59,6 +65,9 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("database.conn_max_idle_time", 1800)
 	v.SetDefault("log.level", "info")
 	v.SetDefault("jwt.expire", 7200)
+	v.SetDefault("auth.allow_admin_register", false)
+	v.SetDefault("auth.login_rate_limit", 10)
+	v.SetDefault("auth.register_rate_limit", 5)
 }
 
 func bindEnv(v *viper.Viper) {
@@ -72,6 +81,9 @@ func bindEnv(v *viper.Viper) {
 		"log.level",
 		"jwt.secret",
 		"jwt.expire",
+		"auth.allow_admin_register",
+		"auth.login_rate_limit",
+		"auth.register_rate_limit",
 	}
 
 	for _, key := range keys {

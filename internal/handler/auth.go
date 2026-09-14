@@ -41,7 +41,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 // Register
 // @Summary 用户注册
-// @Description 注册新用户；role 传 admin 可注册管理员（本地开发用）
+// @Description 注册新用户，默认角色 member；仅当服务端开启 auth.allow_admin_register 时才接受请求中的 role 字段
 // @Tags 认证
 // @Accept json
 // @Produce json

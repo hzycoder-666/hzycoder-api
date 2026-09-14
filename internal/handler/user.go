@@ -47,7 +47,13 @@ func (h *UserHandler) GetByUsername(c *gin.Context) {
 // @Success 200 {object} response.Resp{data=resDto.QueryUser}
 // @Router /v1/users/me [get]
 func (h *UserHandler) Me(c *gin.Context) {
-	user, err := h.users.GetByID(c.Request.Context(), middleware.GetUserID(c))
+	userID, ok := middleware.GetUserID(c)
+	if !ok {
+		response.Abort(c, "missing user id")
+		return
+	}
+
+	user, err := h.users.GetByID(c.Request.Context(), userID)
 	if err != nil {
 		c.Error(err)
 		return
